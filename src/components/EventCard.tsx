@@ -8,7 +8,7 @@ interface EventCardProps{
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
     return (
         <div className="col-md-4">
-        <a href={`/Frontend-RIP/event/${event.id}`}>
+        <a href={`#/event/${event.id}`}>
           <div className="card mb-3 pb-0" style={{ border: '1px solid #87ceeb', borderRadius: '8px', padding: '15px', marginBottom: '20px', backgroundColor: '#ffffff' }}>
             <img src={event.imageFilePath == "/gif/loading-11.gif" ? "/Frontend-RIP/gif/loading-11.gif"
              : (event.imageFilePath ? `http://192.168.0.13:9000/rip/${event.imageFilePath}` : '/Frontend-RIP/photos/error-404.png')}

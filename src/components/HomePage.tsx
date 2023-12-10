@@ -18,6 +18,7 @@ const HomePage: React.FC<HomePageProps> = () => {
 
     useEffect(() => {
         // Проверьте, что здесь правильные хлебные крошки
+        setEvents(Mock);
         updateBreadcrumbs([{ name: 'Главная', path: '/' }]);
     }, []);
 
@@ -46,7 +47,6 @@ const HomePage: React.FC<HomePageProps> = () => {
 
         fetchEvents(eventName, eventStatus);
     }, [eventName, eventStatus]);
-
     return (
         <div>
             <div className="container mt-3">

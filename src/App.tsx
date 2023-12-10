@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {HashRouter, Route, Routes } from 'react-router-dom'
 import About from './components/About';
 import EventDetails from './components/EventDetails';
 import HomePage from './components/HomePage';
@@ -10,7 +10,7 @@ function App() {
 
   return (
     <BreadcrumbsProvider initialBreadcrumbs={[{ name: '', path: '/' }]}>
-      <BrowserRouter basename="/Frontend-RIP">
+      <HashRouter>
       <Header/>
       <Breadcrumbs/>
         <Routes>
@@ -18,7 +18,7 @@ function App() {
           <Route path="/about" element={<div style={{ width: '100vw' }}><About /></div>} />
           <Route path="/event/:id" element={<div style={{ width: '100vw' }}><EventDetails /></div>} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </BreadcrumbsProvider>
   );
 }
