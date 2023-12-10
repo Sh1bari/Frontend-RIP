@@ -10,14 +10,14 @@ function App() {
 
   return (
     <BreadcrumbsProvider initialBreadcrumbs={[{ name: '', path: '/' }]}>
-      <BrowserRouter>
+      <BrowserRouter basename="/Frontend-RIP">
       <Header/>
       <Breadcrumbs/>
         <Routes>
-            <Route path="/" element={<div style={{ width: '100vw' }}><HomePage /></div>} />
-            <Route path="/about" element={<div style={{ width: '100vw' }}><About /></div>} />
-            <Route path="/event/:id" element={<div style={{ width: '100vw' }}><EventDetails /></div>} />
-          </Routes>
+          <Route path="/" element={<div style={{ width: '100vw' }}><HomePage /></div>} />
+          <Route path="/about" element={<div style={{ width: '100vw' }}><About /></div>} />
+          <Route path="/event/:id" element={<div style={{ width: '100vw' }}><EventDetails /></div>} />
+        </Routes>
       </BrowserRouter>
     </BreadcrumbsProvider>
   );

@@ -18,7 +18,7 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
 
   useEffect(() => {
     // Проверьте, что здесь правильные хлебные крошки
-  updateBreadcrumbs([{ name: 'Главная', path: '/' }, { name: selectedEvent? selectedEvent.name : "Мероприятие", path: '/event/' + id}]);
+  updateBreadcrumbs([{ name: 'Главная', path: '/' }, { name: selectedEvent? selectedEvent.name : "Мероприятие", path: 'event/' + id}]);
   }, [selectedEvent]);
 
   useEffect(() => {
@@ -48,9 +48,9 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
               <img 
                 src={
                   selectedEvent?.imageFilePath
-                  ? (selectedEvent.imageFilePath == "/gif/loading-11.gif" ? "/gif/loading-11.gif" 
+                  ? (selectedEvent.imageFilePath == "/gif/loading-11.gif" ? "/Frontend-RIP/gif/loading-11.gif" 
                   : `http://192.168.0.13:9000/rip/${selectedEvent.imageFilePath}`)
-                  : '/photos/error-404.png'
+                  : '/Frontend-RIP/photos/error-404.png'
                 } className="card-img-top img-fluid" alt="Holiday Image" style={{ height: '400px', objectFit: 'cover' }} />
               <div className="card-body">
                 <div className="row">
