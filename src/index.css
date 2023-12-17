@@ -34,6 +34,24 @@ h1 {
   line-height: 1.1;
 }
 
+.modal-blur {
+  position: relative;
+  overflow: hidden; /* Добавим overflow: hidden для скрытия лишнего фона */
+}
+
+.modal-blur::before {
+  content: "";
+  position: fixed; /* Изменим на absolute */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7); /* Фон с прозрачностью для создания визуального эффекта размытия */
+  filter: blur(5px); /* Измените значение по желанию */
+  z-index: -1;
+}
+
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
