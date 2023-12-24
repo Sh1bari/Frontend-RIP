@@ -5,15 +5,21 @@ import HomePage from './components/HomePage';
 import { BreadcrumbsProvider } from './components/breadcrumbs/BreadcrumbsContext';
 import Header from './components/global/Header';
 import { Breadcrumbs } from './components/breadcrumbs/BreadcrumbsContext';
-import { Provider } from 'react-redux';
-import store from './redux/store'; // Ваш Redux store
 import { ToastContainer } from 'react-toastify';
+import { setupInterceptors, resetToken } from '../src/API/api';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 function App() {
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // При монтировании компонента
+    setupInterceptors(dispatch);
+    resetToken(dispatch);
+  }, [dispatch]);
+  
   return (
-    <Provider store={store}>
-      <BreadcrumbsProvider initialBreadcrumbs={[{ name: '', path: '/' }]}>
+    <BreadcrumbsProvider initialBreadcrumbs={[{ name: '', path: '/' }]}>
         <HashRouter>
         <Header/>
         <Breadcrumbs/>
@@ -24,8 +30,7 @@ function App() {
           </Routes>
           <ToastContainer style={{ zIndex: 9999 }} />
         </HashRouter>
-      </BreadcrumbsProvider>
-    </Provider>
+    </BreadcrumbsProvider>
   );
 }
 

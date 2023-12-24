@@ -40,8 +40,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onClose }) => {
             const response = await api.post('/registration', formData);
         
             // Обрабатываем успешный ответ
-            console.log('Успешный ответ:', response.data);
             dispatch(setAuthenticated({ isAuthenticated: true, username: response.data.username }));
+            localStorage.setItem('token', response.data.token);
         
             // Закрываем модальное окно
             onClose();

@@ -7,6 +7,8 @@ import RegisterForm from '../auth/RegisterForm';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setAuthenticated } from '../../redux/authSlice.ts';
+import api from '../../API/api.ts';
+import { showErrorNotification } from '../global/notificationService.ts';
 
 const Header: React.FC = () => {
 
@@ -15,6 +17,12 @@ const Header: React.FC = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const username = useSelector((state: RootState) => state.auth.username);
+
+  const dispatch = useDispatch();
+
+  const handleShowError = (msg : string) => {
+    showErrorNotification(msg);
+  };
 
   const handleLoginClick = () => {
     setShowLoginModal(true);
@@ -31,12 +39,22 @@ const Header: React.FC = () => {
     setShowRegisterModal(false);
     document.body.classList.remove('modal-blur');
   };
-  const dispatch = useDispatch();
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = async () => {
     // Добавьте здесь логику для выхода пользователя, например, вызов экшена Redux
     console.log('Logging out...');
-    dispatch(setAuthenticated({ isAuthenticated: false, username: null }));
+    try {
+      // Отправляем POST-запрос с данными формы
+      api.post('/logOut');
+      dispatch(setAuthenticated({ isAuthenticated: false, username: null }));
+      localStorage.removeItem('token')
+
+    } catch (error: any) {
+      if (error.response && (error.response.status === 400 || error.response.status === 401)) {
+          console.error('Ошибка при отправке запроса:', error.response.data);
+          handleShowError(error.response.data.message);
+      }
+    }
     navigate('/');
   };
 
@@ -44,6 +62,7 @@ const Header: React.FC = () => {
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark">
         <a className="navbar-brand" href="#/">Мероприятия</a>
+        <a className="navbar-brand" href="#/about">О нас</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -53,10 +72,13 @@ const Header: React.FC = () => {
             {isAuthenticated ? (
               <>
                 <li className="nav-item">
-                  <a className="nav-link" href="#" onClick={handleLogoutClick}>{username}</a>
+                  <a className="nav-link btn btn-primary mr-5" href="#" role="button">Корзина</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#" onClick={handleLogoutClick}>Выход</a>
+                  <span className="nav-link text-light">{username}</span>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link btn btn-danger mr-2" href="#" onClick={handleLogoutClick}>Выход</a>
                 </li>
               </>
             ) : (
@@ -69,9 +91,6 @@ const Header: React.FC = () => {
                 </li>
               </>
             )}
-            <li className="nav-item">
-              <a className="nav-link" href="#/about">О нас</a>
-            </li>
           </ul>
         </div>
       </nav>

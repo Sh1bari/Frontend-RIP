@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import api from '../../API/api.ts';
+import { showErrorNotification } from '../global/notificationService.ts';
+import { useDispatch } from 'react-redux';
+import { setAuthenticated } from '../../redux/authSlice.ts';
 
 interface LoginFormProps {
   onClose: () => void;
@@ -6,23 +10,47 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
 
-    const [formData, setFormData] = useState({
-        username: '',
-        password: ''
-      });
+  const handleShowError = (msg : string) => {
+    showErrorNotification(msg);
+  };
+
+  const [formData, setFormData] = useState({
+      username: '',
+      password: ''
+    });
+  const dispatch = useDispatch();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Отправляем POST-запрос с данными формы
+      const response = await api.post('/logIn', formData);
     
-      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
-      };
+      // Обрабатываем успешный ответ
+      dispatch(setAuthenticated({ isAuthenticated: true, username: formData.username }));
+      localStorage.setItem('token', response.data.token);
     
-      const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Добавьте здесь логику для обработки данных формы, например, отправка на сервер
-        console.log('Отправка данных формы:', formData);
-        // Закройте модальное окно
-        onClose();
-      };
+      // Закрываем модальное окно
+      onClose();
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response && (error.response.status === 400 || error.response.status === 401)) {
+          handleShowError('Неправильный логин или пароль');
+        }
+      }
+    }
+    console.log('Отправка данных формы:', formData);
+    // Закройте модальное окно
+    onClose();
+  };
+
+      
 
   return (
     <form onSubmit={handleSubmit}>

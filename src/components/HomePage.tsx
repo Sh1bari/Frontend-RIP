@@ -4,6 +4,9 @@ import EventCard from './EventCard';
 import Footer from './global/Footer';
 import { useBreadcrumbsUpdater } from './breadcrumbs/BreadcrumbsContext';
 import Mock from './mock/Mock';
+import api from '../API/api';
+import { useDispatch } from 'react-redux';
+import { setApplicationId } from '../redux/authSlice';
 
 
 interface HomePageProps {}
@@ -13,6 +16,7 @@ const HomePage: React.FC<HomePageProps> = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [eventName, setEventName] = useState('');
     const [eventStatus, setEventStatus] = useState('ACTIVE');
+    const dispatch = useDispatch();
 
     const updateBreadcrumbs = useBreadcrumbsUpdater();
 
@@ -33,9 +37,10 @@ const HomePage: React.FC<HomePageProps> = () => {
     useEffect(() => {
         const fetchEvents = async (searchName : string, status: string) => {
             try {
-                const response = await fetch('http://localhost:8082/api/events?eventName=' + searchName + '&eventStatus=' + status);
-                const data = await response.json();
-                setEvents(data.events.content);
+                const response = await api.get('/events?eventName=' + searchName + '&eventStatus=' + status);
+                setEvents(response.data.events.content);
+                dispatch(setApplicationId(response.data.applicationId));
+                localStorage.setItem('applicationId', response.data.applicationId);
             } catch (error) {
                 setEvents(Mock);
                 console.error('Error fetching events:', error);
