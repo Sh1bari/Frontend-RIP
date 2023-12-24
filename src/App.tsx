@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { setupInterceptors, resetToken } from '../src/API/api';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import Bag from './components/Bag';
 
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ function App() {
             <Route path="/" element={<div style={{ width: '100vw' }}><HomePage /></div>} />
             <Route path="/about" element={<div style={{ width: '100vw' }}><About /></div>} />
             <Route path="/event/:id" element={<div style={{ width: '100vw' }}><EventDetails /></div>} />
+            <Route path="/bag" element={<div style={{ width: '100vw' }}><Bag /></div>} />
           </Routes>
           <ToastContainer style={{ zIndex: 9999 }} />
         </HashRouter>

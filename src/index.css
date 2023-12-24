@@ -14,6 +14,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.empty-cart-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000000; /* Красный цвет */
+  margin-top: 20px; /* Добавлен верхний отступ для разделения от других элементов */
+}
+
 a {
   font-weight: 500;
   color: #646cff;

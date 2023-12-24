@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { setAuthenticated } from '../redux/authSlice.ts';
+import { setApplicationId, setAuthenticated } from '../redux/authSlice.ts';
 import { showErrorNotification } from '../components/global/notificationService.ts';
 
-const baseURL = 'http://localhost:8082/api'; // Замените на свой базовый URL
+const baseURL = '/api/api'; // Замените на свой базовый URL
 
 const api = axios.create({
   baseURL,
@@ -45,6 +45,8 @@ export const setupInterceptors = (dispatch:any) => {
 
 export const resetToken = async (dispatch:any) => {
   const token = localStorage.getItem('token');
+  const applicationId = localStorage.getItem('applicationId');
+  dispatch(setApplicationId(applicationId));
   if (token) {
     try {
       const response = await api.post('/reset-token');

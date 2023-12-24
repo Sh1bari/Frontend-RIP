@@ -1,6 +1,6 @@
 // BreadcrumbsContext.tsx
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Breadcrumb {
   name: string;
@@ -8,19 +8,30 @@ interface Breadcrumb {
 }
 
 const BreadcrumbsContext = React.createContext<Breadcrumb[]>([]);
-const BreadcrumbsUpdaterContext = React.createContext<React.Dispatch<React.SetStateAction<Breadcrumb[]>> | undefined>(undefined);
+const BreadcrumbsUpdaterContext = React.createContext<
+  React.Dispatch<React.SetStateAction<Breadcrumb[]>> | undefined
+>(undefined);
 
 interface BreadcrumbsProviderProps {
   initialBreadcrumbs: Breadcrumb[];
   children: React.ReactNode;
 }
 
-export const BreadcrumbsProvider: React.FC<BreadcrumbsProviderProps> = ({ initialBreadcrumbs, children }) => {
-  const [internalBreadcrumbs, setInternalBreadcrumbs] = useState(initialBreadcrumbs);
+export const BreadcrumbsProvider: React.FC<BreadcrumbsProviderProps> = ({
+  initialBreadcrumbs,
+  children,
+}) => {
+  const [internalBreadcrumbs, setInternalBreadcrumbs] =
+    useState(initialBreadcrumbs);
 
-  const updateBreadcrumbs: React.Dispatch<React.SetStateAction<Breadcrumb[]>> = (newBreadcrumbs) => {
+  const updateBreadcrumbs: React.Dispatch<
+    React.SetStateAction<Breadcrumb[]>
+  > = (newBreadcrumbs) => {
     setInternalBreadcrumbs((prevState) => {
-      const nextState = typeof newBreadcrumbs === 'function' ? newBreadcrumbs(prevState) : newBreadcrumbs;
+      const nextState =
+        typeof newBreadcrumbs === "function"
+          ? newBreadcrumbs(prevState)
+          : newBreadcrumbs;
       return nextState;
     });
   };
@@ -41,7 +52,9 @@ export const useBreadcrumbs = () => {
 export const useBreadcrumbsUpdater = () => {
   const updater = useContext(BreadcrumbsUpdaterContext);
   if (!updater) {
-    throw new Error('useBreadcrumbsUpdater must be used within a BreadcrumbsProvider');
+    throw new Error(
+      "useBreadcrumbsUpdater must be used within a BreadcrumbsProvider"
+    );
   }
   return updater;
 };
@@ -54,11 +67,11 @@ export const Breadcrumbs: React.FC = () => {
   }
 
   return (
-    <div style={ {marginLeft: '20px', marginTop: '20px' }}>
+    <div style={{ marginLeft: "20px", marginTop: "20px" }}>
       {breadcrumbs.map((breadcrumb, index) => (
         <span key={index}>
           <Link to={breadcrumb.path}>{breadcrumb.name}</Link>
-          {index < breadcrumbs.length - 1 && ' / '}
+          {index < breadcrumbs.length - 1 && " / "}
         </span>
       ))}
     </div>
