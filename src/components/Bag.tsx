@@ -137,7 +137,7 @@ const Bag: React.FC = () => {
                         event.imageFilePath === "/gif/loading-11.gif"
                           ? "/Frontend-RIP/gif/loading-11.gif"
                           : event.imageFilePath
-                          ? `http://192.168.0.13:9000/rip/${event.imageFilePath}`
+                          ? `http://192.168.56.1:9000/rip/${event.imageFilePath}`
                           : "/Frontend-RIP/photos/error-404.png"
                       }
                       className="card-img"
