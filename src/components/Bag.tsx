@@ -2,31 +2,36 @@ import React, { useEffect, useState } from "react";
 import Footer from "./global/Footer";
 import { useBreadcrumbsUpdater } from "./breadcrumbs/BreadcrumbsContext";
 import api from "../API/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { showErrorNotification } from "./global/notificationService";
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from "./global/notificationService";
+import { setApplicationId } from "../redux/authSlice";
 
 const Bag: React.FC = () => {
   const mockItems = [
     {
       id: 1,
       name: "Загрузка...",
-      quantity: 0,
+      date: 0,
       imageFilePath: "/gif/loading-11.gif",
     },
     {
       id: 2,
       name: "Загрузка...",
-      quantity: 0,
+      date: 0,
       imageFilePath: "/gif/loading-11.gif",
     },
     {
       id: 3,
       name: "Загрузка...",
-      quantity: 0,
+      date: 0,
       imageFilePath: "/gif/loading-11.gif",
     },
   ];
+  const dispatch = useDispatch();
   const applicationId = useSelector(
     (state: RootState) => state.auth.applicationId
   );
@@ -35,6 +40,10 @@ const Bag: React.FC = () => {
 
   const handleShowError = (msg: string) => {
     showErrorNotification(msg);
+  };
+
+  const handleShowSuccess = (msg: string) => {
+    showSuccessNotification(msg);
   };
 
   const fetchEvents = async (appId: any) => {
@@ -77,25 +86,22 @@ const Bag: React.FC = () => {
     }
   };
 
-  const deleteApplication = async (id: any) => {
+  const deleteApplication = async () => {
     try {
-      await api.delete(
-        `/application/${
-          applicationId ? applicationId : localStorage.getItem("applicationId")
-        }/event/${id}`
-      );
+      await api.delete(`/application/${applicationId}`);
+      dispatch(setApplicationId("0"));
+      localStorage.setItem("applicationId", "0");
     } catch (error: any) {
       handleShowError(error.response.data.message);
     }
   };
 
-  const formApplication = async (id: any) => {
+  const formApplication = async () => {
     try {
-      await api.delete(
-        `/application/${
-          applicationId ? applicationId : localStorage.getItem("applicationId")
-        }/event/${id}`
-      );
+      await api.put(`/application/${applicationId}/form`);
+      dispatch(setApplicationId("0"));
+      localStorage.setItem("applicationId", "0");
+      handleShowSuccess("Заявка сформирована");
     } catch (error: any) {
       handleShowError(error.response.data.message);
     }
@@ -106,14 +112,14 @@ const Bag: React.FC = () => {
       <div>
         <div className="container mt-3">
           {applications.length > 0 ? (
-            <h2 className="text-center">Корзина</h2>
+            <h2 className="text-center mb-4">Корзина</h2>
           ) : (
             <></>
           )}
           {applications.length === 0 ? (
             <>
               <h2 className="text-center">Корзина пуста</h2>
-              <div className="text-center empty-cart">
+              <div className="text-center empty-cart mt-4">
                 <img
                   src={"/Frontend-RIP/photos/bag.png"}
                   alt="Empty Cart"
@@ -146,7 +152,7 @@ const Bag: React.FC = () => {
                   <div className="col-md-4">
                     <div className="card-body" style={{ maxHeight: "150px" }}>
                       <h5 className="card-title">{event.name}</h5>
-                      <p className="card-text">Количество: {event.quantity}</p>
+                      <p className="card-text">Дата: {event.date}</p>
                       <button
                         className="btn btn-danger"
                         onClick={() => deleteEvent(event.id)}
@@ -163,7 +169,7 @@ const Bag: React.FC = () => {
             <div className="text-center mt-3">
               <button
                 className="btn btn-danger mr-2"
-                onClick={deleteApplication}
+                onClick={() => deleteApplication()}
               >
                 Очистить
               </button>

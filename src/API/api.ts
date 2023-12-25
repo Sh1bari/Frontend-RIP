@@ -12,6 +12,7 @@ const api = axios.create({
   },
 });
 
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -37,6 +38,7 @@ export const setupInterceptors = (dispatch:any) => {
         localStorage.removeItem('token');
         localStorage.removeItem('applicationId');
         showErrorNotification('Вы не авторизированы');
+        console.log('мув');
       }
       return Promise.reject(error);
     }

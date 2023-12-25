@@ -37,6 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
       localStorage.setItem("token", response.data.token);
 
       // Закрываем модальное окно
+      
       onClose();
     } catch (error: any) {
       if (error.response) {

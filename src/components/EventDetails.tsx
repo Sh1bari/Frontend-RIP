@@ -69,8 +69,10 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
   const buyTicket = async () => {
     try {
       // Отправляем POST-запрос с данными формы
-      await api.post(`/application/${applicationId}/event/${id}`);
+      const response = await api.post(`/application/${applicationId}/event/${id}`);
       handleShowSuccess("Вы подали заявку на участие");
+      dispatch(setApplicationId(response.data.id))
+      localStorage.setItem('applicationId', response.data.id);
     } catch (error: any) {
       if (error.response) {
         handleShowError(error.response.data.message);

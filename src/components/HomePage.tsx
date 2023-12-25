@@ -24,6 +24,9 @@ const HomePage: React.FC<HomePageProps> = () => {
   const eventStatusRed = useSelector(
     (state: RootState) => state.auth.eventStatus
   );
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   useEffect(() => {
     // Проверьте, что здесь правильные хлебные крошки
@@ -59,11 +62,11 @@ const HomePage: React.FC<HomePageProps> = () => {
     };
 
     fetchEvents(eventNameRed, eventStatusRed);
-  }, [eventNameRed, eventStatusRed]);
+  }, [eventNameRed, eventStatusRed, isAuthenticated]);
   return (
     <div>
       <div className="container mt-3">
-        <h2 className="text-center">Мероприятия</h2>
+        <h2 className="text-center mb-4">Мероприятия</h2>
 
         <div className="col-13 card">
           <div className="card-body">

@@ -16,6 +16,9 @@ const Header: React.FC = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+  const applicationId = useSelector(
+    (state: RootState) => state.auth.applicationId
+  );
   const username = useSelector((state: RootState) => state.auth.username);
 
   const dispatch = useDispatch();
@@ -45,9 +48,10 @@ const Header: React.FC = () => {
     console.log("Logging out...");
     try {
       // Отправляем POST-запрос с данными формы
-      api.post("/logOut");
+      await api.post("/logOut");
       dispatch(setAuthenticated({ isAuthenticated: false, username: null }));
       localStorage.removeItem("token");
+      localStorage.removeItem("applicationId");
     } catch (error: any) {
       if (
         error.response &&
@@ -84,13 +88,23 @@ const Header: React.FC = () => {
           <ul className="navbar-nav ml-auto">
             {isAuthenticated ? (
               <>
-                <li className="nav-item">
+                {applicationId != 0 ? 
+                (<li className="nav-item">
                   <a
                     className="nav-link btn btn-primary mr-5"
                     href="#/bag"
                     role="button"
                   >
                     Корзина
+                  </a>
+                </li>) : <></>}
+                <li className="nav-item">
+                  <a
+                    className="nav-link btn btn-primary mr-5"
+                    href="#/history"
+                    role="button"
+                  >
+                    История
                   </a>
                 </li>
                 <li className="nav-item">

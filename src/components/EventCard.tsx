@@ -1,11 +1,52 @@
 import React from "react";
 import Event from "../models/Event";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { showErrorNotification, showSuccessNotification } from "./global/notificationService";
+import api from "../API/api";
+import { setApplicationId } from "../redux/authSlice";
 
 interface EventCardProps {
   event: Event;
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const applicationId = useSelector(
+    (state: RootState) => state.auth.applicationId
+  );
+  const dispatch = useDispatch();
+
+  const buyTicket = async (id:any) => {
+    try {
+      // Отправляем POST-запрос с данными формы
+      const response = await api.post(`/application/${applicationId}/event/${id}`);
+      handleShowSuccess("Вы подали заявку на участие");
+      dispatch(setApplicationId(response.data.id))
+      localStorage.setItem('applicationId', response.data.id);
+    } catch (error: any) {
+      if (error.response) {
+        handleShowError(error.response.data.message);
+      }
+    }
+  };
+
+  const showNotAuthError = () => {
+    handleShowError("Для покупки билеты вы должны быть авторизированы");
+  };
+
+  const handleShowError = (msg: string) => {
+    showErrorNotification(msg);
+  };
+
+  const handleShowSuccess = (msg: string) => {
+    showSuccessNotification(msg);
+  };
+
+
+
   return (
     <div className="col-md-4">
       <a href={`#/event/${event.id}`}>
@@ -64,12 +105,39 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
                 ? event.description.substring(0, 80) + "..."
                 : event.description}
             </p>
-            <p className="card-left" style={{ marginTop: "30px" }}>
-              <span style={{ fontWeight: "bold", color: "#006400" }}>
-                Осталось мест:{" "}
-                <span>{event.tickets - event.purchasedTickets}</span>
-              </span>
-            </p>
+            <div className="row" style={{ marginTop: "30px" }}>
+              <div className="col-md-7">
+                <span style={{ fontWeight: "bold", color: "#006400" }}>
+                  Осталось мест:{" "}
+                  <span>{event.tickets - event.purchasedTickets}</span>
+                </span>
+              </div>
+              <div className="col-md-5 text-right">
+              {isAuthenticated ? (
+                      <>
+                        <button
+                          className="btn btn-success btn-block"
+                          onClick={(e)=>{
+                            e.preventDefault();
+                            buyTicket(event.id);}}
+                        >
+                          Купить
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className="btn btn-secondary btn-block"
+                          onClick={(e)=>{
+                            e.preventDefault();
+                            showNotAuthError();}}
+                        >
+                          Купить
+                        </button>
+                      </>
+                    )}
+              </div>
+            </div>
           </div>
         </div>
       </a>
