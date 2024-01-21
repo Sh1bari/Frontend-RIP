@@ -88,20 +88,32 @@ const Header: React.FC = () => {
           <ul className="navbar-nav ml-auto">
             {isAuthenticated ? (
               <>
-                {applicationId != 0 ? 
-                (<li className="nav-item">
-                  <a
-                    className="nav-link btn btn-primary mr-5"
-                    href="#/bag"
-                    role="button"
-                  >
-                    Корзина
-                  </a>
-                </li>) : <></>}
+                {applicationId != 0 ? (
+                  <li className="nav-item">
+                    <a
+                      className="nav-link btn btn-primary mr-5"
+                      href={`#/application/${applicationId}`}
+                      role="button"
+                    >
+                      Корзина
+                    </a>
+                  </li>
+                ) : (
+                  <li className="nav-item">
+                    <a
+                      className="nav-link btn btn-primary mr-5"
+                      href={`#/application/${applicationId}`}
+                      role="button"
+                      style={{ pointerEvents: "none", opacity: 0.6 }}
+                    >
+                      Корзина
+                    </a>
+                  </li>
+                )}
                 <li className="nav-item">
                   <a
                     className="nav-link btn btn-primary mr-5"
-                    href="#/history"
+                    href="#/applications"
                     role="button"
                   >
                     История

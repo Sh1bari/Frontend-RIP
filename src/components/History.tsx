@@ -11,6 +11,8 @@ const models = [
   {
     id: 0,
     formationTime: "2023-12-25T02:35:08.702867",
+    creatorUsername: "test",
+    moderatorUsername: "test",
     endTime: "2023-12-25T02:35:08.702867",
     status: "FORMED",
   },
@@ -29,7 +31,7 @@ const History: React.FC<HistoryProps> = () => {
       { name: "Главная", path: "/" },
       {
         name: "История",
-        path: "/history",
+        path: "/applications",
       },
     ]);
 
@@ -103,6 +105,7 @@ const History: React.FC<HistoryProps> = () => {
                         (sortOrder === "asc" ? "▲" : "▼")}
                     </button>
                   </th>
+                  <th className="text-start" style={{ paddingLeft: "0px" }}>Пользователь</th>
                   <th>
                     <button
                       className="btn btn-link"
@@ -116,6 +119,7 @@ const History: React.FC<HistoryProps> = () => {
                         (sortOrder === "asc" ? "▲" : "▼")}
                     </button>
                   </th>
+                  <th className="text-start" style={{ paddingLeft: "0px" }}>Модератор</th>
                   <th>
                     <button
                       className="btn btn-link"
@@ -129,14 +133,16 @@ const History: React.FC<HistoryProps> = () => {
                         (sortOrder === "asc" ? "▲" : "▼")}
                     </button>
                   </th>
-                  <th className="text-start" style={{ paddingLeft: "80px" }}>Действия</th>
+                  <th className="text-start" style={{ paddingLeft: "45px" }}>Действия</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedModels.map((model, index) => (
                   <tr key={index}>
                     <td>{formatDate(model.formationTime)}</td>
+                    <td>{model.creatorUsername}</td>
                     <td>{model.endTime ? formatDate(model.endTime) : "N/A"}</td>
+                    <td>{model.moderatorUsername}</td>
                     <td style={{ color: getStatusColor(model.status).color }}>
                       {getStatusColor(model.status).text}
                     </td>

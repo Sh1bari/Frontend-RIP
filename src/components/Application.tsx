@@ -3,6 +3,9 @@ import Footer from "./global/Footer";
 import { useBreadcrumbsUpdater } from "./breadcrumbs/BreadcrumbsContext";
 import { useParams } from "react-router-dom";
 import api from "../API/api";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import Bag from "./Bag";
 
 const mockItems = [
   {
@@ -27,7 +30,9 @@ const mockItems = [
 
 const Application: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-
+  const applicationId = useSelector(
+    (state: RootState) => state.auth.applicationId
+  );
   const [applications, setApplications] = useState(mockItems);
   const updateBreadcrumbs = useBreadcrumbsUpdater();
 
@@ -48,13 +53,15 @@ const Application: React.FC = () => {
 
     updateBreadcrumbs([
       { name: "Главная", path: "/" },
-      { name: "История", path: "/history" },
+      { name: "История", path: "/applications" },
       { name: "Заявка", path: `/application/${id}` },
     ]);
   }, []);
 
   return (
-    <div>
+    <>
+    {applicationId?.toString() != id ? 
+      (<div>
       <div className="container mt-3">
       <h2 className="text-center mb-4">Заявка</h2>
         {applications.map((event) => (
@@ -89,7 +96,9 @@ const Application: React.FC = () => {
         ))}
       </div>
       <Footer />
-    </div>
+    </div> )
+    : (<Bag />)}
+    </>
   );
 };
 
