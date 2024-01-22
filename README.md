@@ -1,3 +1,8 @@
+# Backend - https://github.com/Sh1bari/Backend-RIP
+# Tauri - https://github.com/Sh1bari/Tauri_Desktop
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
