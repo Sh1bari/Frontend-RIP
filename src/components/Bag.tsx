@@ -10,6 +10,7 @@ import {
 } from "./global/notificationService";
 import { setApplicationId } from "../redux/authSlice";
 import { useNavigate } from 'react-router-dom';
+import minioConfig from "../API/config";
 
 const Bag: React.FC = () => {
   const mockItems = [
@@ -105,6 +106,7 @@ const Bag: React.FC = () => {
       dispatch(setApplicationId("0"));
       localStorage.setItem("applicationId", "0");
       handleShowSuccess("Заявка сформирована");
+      navigate('/');
     } catch (error: any) {
       handleShowError(error.response.data.message);
     }
@@ -140,7 +142,7 @@ const Bag: React.FC = () => {
                         event.imageFilePath === "/gif/loading-11.gif"
                           ? "/Frontend-RIP/gif/loading-11.gif"
                           : event.imageFilePath
-                          ? `http://192.168.56.1:9000/rip/${event.imageFilePath}`
+                          ? `${minioConfig.minioUrl}:9000/rip/${event.imageFilePath}`
                           : "/Frontend-RIP/photos/error-404.png"
                       }
                       className="card-img"

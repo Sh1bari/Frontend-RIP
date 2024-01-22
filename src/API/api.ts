@@ -37,7 +37,8 @@ export const setupInterceptors = (dispatch:any) => {
         dispatch(setAuthenticated({ isAuthenticated: false, username: null }));
         localStorage.removeItem('token');
         localStorage.removeItem('applicationId');
-        localStorage.removeItem('role')
+        localStorage.setItem("role", "USER");
+        dispatch(setRole("USER"));
         showErrorNotification('Вы не авторизированы');
         console.log('мув');
       }

@@ -6,6 +6,7 @@ import api from "../API/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import Bag from "./Bag";
+import minioConfig from "../API/config";
 
 const mockItems = [
   {
@@ -73,7 +74,7 @@ const Application: React.FC = () => {
                     event.imageFilePath === "/gif/loading-11.gif"
                       ? "/Frontend-RIP/gif/loading-11.gif"
                       : event.imageFilePath
-                      ? `http://192.168.56.1:9000/rip/${event.imageFilePath}`
+                      ? `${minioConfig.minioUrl}:9000/rip/${event.imageFilePath}`
                       : "/Frontend-RIP/photos/error-404.png"
                   }
                   className="card-img"

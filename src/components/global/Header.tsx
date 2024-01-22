@@ -5,7 +5,7 @@ import LoginForm from "../auth/LoginForm";
 import RegisterForm from "../auth/RegisterForm";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setAuthenticated } from "../../redux/authSlice.ts";
+import { setAuthenticated, setRole } from "../../redux/authSlice.ts";
 import api from "../../API/api.ts";
 import { showErrorNotification } from "../global/notificationService.ts";
 
@@ -52,6 +52,8 @@ const Header: React.FC = () => {
       dispatch(setAuthenticated({ isAuthenticated: false, username: null }));
       localStorage.removeItem("token");
       localStorage.removeItem("applicationId");
+      localStorage.setItem("role", "USER");
+      dispatch(setRole("USER"));
     } catch (error: any) {
       if (
         error.response &&

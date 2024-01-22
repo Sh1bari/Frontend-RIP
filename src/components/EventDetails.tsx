@@ -17,6 +17,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ruLocale from "date-fns/locale/ru";
 import { ru } from "date-fns/locale";
+import minioConfig from "../API/config";
 
 interface EventDetailsProps {}
 
@@ -45,22 +46,27 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
     try {
       // Конвертировать строку в формат "2024-01-22T03:41:18.169Z" в объект Date
       console.log("Event updated successfully", editableFields.date);
-      const parsedDate = parse(editableFields.date, "dd MMMM HH:mm yyyy", new Date(), {
-        locale: ruLocale,
-      });
+      const parsedDate = parse(
+        editableFields.date,
+        "dd MMMM HH:mm yyyy",
+        new Date(),
+        {
+          locale: ruLocale,
+        }
+      );
       const formattedDate = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", {
         locale: ruLocale,
       });
       console.log("Formatted Date:", formattedDate);
-    
+
       // Подготовить данные для отправки
       const updatedData = {
         ...editableFields,
         eventTime: formattedDate, // Заменить поле date на объект Date
       };
-    
+
       console.log("Updated Data:", updatedData);
-    
+
       const response = await api.put(`/event/${id}`, updatedData);
       setSelectedEvent(response.data);
     } catch (error: any) {
@@ -121,11 +127,10 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
         fetchEventDetails();
       }, 2000);
     }
-  }
+  };
 
   useEffect(() => {
     setSelectedEvent(Mock.find((event) => event.id === 1) || null);
-    ;
     fetchEventDetails();
   }, [id]);
 
@@ -161,7 +166,7 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
     const formattedDate = date
       ? format(date, "dd MMMM HH:mm yyyy", { locale: ruLocale })
       : "";
-  
+
     setEditableFields((prevFields) => {
       // Добавляем проверку, чтобы избежать зацикливания
       if (prevFields.date !== formattedDate) {
@@ -172,9 +177,32 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
       }
       return prevFields;
     });
-  
+
     console.log(formattedDate); // Можете добавить ваши действия с отформатированной датой
   };
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleUploadImage = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", imageFile || ""); // добавьте файл в FormData
+
+      const response = await api.post(`/event/${id}/photo`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Картинка загружена успешно", response.data);
+      fetchEventDetails();
+      // Дополнительная логика при успешной загрузке
+    } catch (error) {
+      console.error("Ошибка при загрузке картинки", error);
+      // Дополнительная логика при ошибке загрузки
+    }
+  };
+
   return (
     <div>
       <div className="container mt-4">
@@ -195,13 +223,42 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
                   selectedEvent?.imageFilePath
                     ? selectedEvent.imageFilePath == "/gif/loading-11.gif"
                       ? "/Frontend-RIP/gif/loading-11.gif"
-                      : `http://192.168.56.1:9000/rip/${selectedEvent.imageFilePath}`
+                      : `${minioConfig.minioUrl}:9000/rip/${selectedEvent.imageFilePath}`
                     : "/Frontend-RIP/photos/error-404.png"
                 }
                 className="card-img-top img-fluid"
                 alt="Holiday Image"
                 style={{ height: "400px", objectFit: "cover" }}
               />
+              {isEditing ? (
+                <>
+                  <div className="mt-3">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            setImageFile(e.target.files?.[0] || null)
+                          }
+                        />
+                      </div>
+                      <div className="col-md-6">
+                        <button
+                          className="btn btn-success"
+                          onClick={() => {
+                            handleUploadImage();
+                          }}
+                        >
+                          Загрузить картинку
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
               <div className="card-body">
                 <div className="row">
                   <div className="col-md-6">
@@ -327,7 +384,10 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
                               <>
                                 <button
                                   className="btn btn-primary btn-block mb-3"
-                                  onClick={() => {setIsEditing(true); fetchEventDetails();}}
+                                  onClick={() => {
+                                    setIsEditing(true);
+                                    fetchEventDetails();
+                                  }}
                                 >
                                   Редактировать
                                 </button>
