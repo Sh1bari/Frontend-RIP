@@ -11,6 +11,7 @@ import { showErrorNotification } from "../global/notificationService.ts";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const role = useSelector((state: RootState) => state.auth.role);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const isAuthenticated = useSelector(
@@ -93,6 +94,10 @@ const Header: React.FC = () => {
                 {applicationId != 0 ? (
                   <li className="nav-item">
                     <a
+                      style={{
+                        backgroundColor: "#0000CD",
+                        borderColor: "#1a5276",
+                      }}
                       className="nav-link btn btn-primary mr-5"
                       href={`#/application/${applicationId}`}
                       role="button"
@@ -106,20 +111,39 @@ const Header: React.FC = () => {
                       className="nav-link btn btn-primary mr-5"
                       href={`#/application/${applicationId}`}
                       role="button"
-                      style={{ pointerEvents: "none", opacity: 0.6 }}
+                      style={{
+                        pointerEvents: "none",
+                        opacity: 0.6,
+                        backgroundColor: "#0000CD",
+                        borderColor: "#1a5276",
+                      }}
                     >
                       Корзина
                     </a>
                   </li>
                 )}
                 <li className="nav-item">
+                  {role == "ADMIN" ? 
+                  (<>
                   <a
                     className="nav-link btn btn-primary mr-5"
                     href="#/applications"
                     role="button"
+                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
+                  >
+                    Заявки
+                  </a>
+                  </>):
+                  (<>
+                  <a
+                    className="nav-link btn btn-primary mr-5"
+                    href="#/applications"
+                    role="button"
+                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                   >
                     История
                   </a>
+                  </>)}
                 </li>
                 <li className="nav-item">
                   <span className="nav-link text-light">{username}</span>
@@ -139,6 +163,7 @@ const Header: React.FC = () => {
                 <li className="nav-item">
                   <button
                     className="nav-link btn btn-link"
+                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                     onClick={handleLoginClick}
                   >
                     Вход
@@ -147,6 +172,7 @@ const Header: React.FC = () => {
                 <li className="nav-item">
                   <button
                     className="nav-link btn btn-link"
+                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                     onClick={handleRegisterClick}
                   >
                     Регистрация

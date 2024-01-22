@@ -39,7 +39,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
       localStorage.setItem("role", response.data.role);
 
       // Закрываем модальное окно
-      
+
       onClose();
     } catch (error: any) {
       if (error.response) {
@@ -83,7 +83,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
         />
       </div>
       <div className="form-group">
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          style={{ backgroundColor: "#0000CD", borderColor: "#1a5276" }}
+          className="btn btn-primary"
+        >
           Вход
         </button>
       </div>

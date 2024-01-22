@@ -147,7 +147,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onClose }) => {
         />
       </div>
       <div className="form-group">
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          style={{ backgroundColor: "#0000CD", borderColor: "#1a5276" }}
+          className="btn btn-primary"
+        >
           Зарегистрироваться
         </button>
       </div>

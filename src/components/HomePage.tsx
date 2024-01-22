@@ -257,6 +257,7 @@ const HomePage: React.FC<HomePageProps> = () => {
                       <td>{event.purchasedTickets}</td>
                       <td>
                         <button
+                          style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                           className="btn btn-primary"
                           onClick={() => handleDetailsClick(event.id)}
                         >

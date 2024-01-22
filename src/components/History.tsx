@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { format } from "date-fns";
 import ruLocale from "date-fns/locale/ru";
 import api from "../API/api";
@@ -6,9 +6,7 @@ import Footer from "./global/Footer";
 import { useBreadcrumbsUpdater } from "./breadcrumbs/BreadcrumbsContext";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { ru } from "date-fns/locale";
 
 interface HistoryProps {}
 type Tab = "history" | "applications";
@@ -38,13 +36,24 @@ const History: React.FC<HistoryProps> = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("");
 
   const fetchData = async () => {
-    updateBreadcrumbs([
-      { name: "Главная", path: "/" },
-      {
-        name: "История",
-        path: "/applications",
-      },
-    ]);
+
+    if(role == "ADMIN"){
+      updateBreadcrumbs([
+        { name: "Главная", path: "/" },
+        {
+          name: "Заявки",
+          path: "/applications",
+        },
+      ]);
+    }else {
+      updateBreadcrumbs([
+        { name: "Главная", path: "/" },
+        {
+          name: "История",
+          path: "/applications",
+        },
+      ]);
+    }
     
     try {
       const response = await api.get("/applications", {
@@ -61,6 +70,7 @@ const History: React.FC<HistoryProps> = () => {
   };
 
   useEffect(() => {
+    fetchData();
     const intervalId = setInterval(() => {
       fetchData();
     }, 3000);
@@ -107,11 +117,7 @@ const History: React.FC<HistoryProps> = () => {
 
   // Функция для обработки нажатия кнопки "Подробнее"
 
-  const [selectedTab, setSelectedTab] = useState("history"); // Изначально выбран "История"
-
-  const handleTabChange = (tab: Tab) => {
-    setSelectedTab(tab);
-  };
+  const [selectedTab, setSelectedTab] = useState("applications"); // Изначально выбран "История"
 
   const role = useSelector((state: RootState) => state.auth.role);
   const username = useSelector((state: RootState) => state.auth.username);
@@ -146,13 +152,6 @@ const History: React.FC<HistoryProps> = () => {
     }
   };
 
-  const handleFormationTimeFromChange = (date: Date | null) => {
-    setFormationTimeFrom(date);
-  };
-
-  const handleFormationTimeToChange = (date: Date | null) => {
-    setFormationTimeTo(date);
-  };
 
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -168,24 +167,7 @@ const History: React.FC<HistoryProps> = () => {
         <div className="card p-3">
           {role == "ADMIN" ? (
             <>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <button
-                  className={`btn btn-${
-                    selectedTab === "history" ? "primary" : "danger"
-                  }`}
-                  onClick={() => handleTabChange("history")}
-                >
-                  История
-                </button>
-                <button
-                  className={`btn btn-${
-                    selectedTab === "applications" ? "primary" : "danger"
-                  }`}
-                  onClick={() => handleTabChange("applications")}
-                >
-                  Заявки
-                </button>
-              </div>
+              
             </>
           ) : (
             <></>
@@ -273,6 +255,7 @@ const History: React.FC<HistoryProps> = () => {
                             <td>
                               <a
                                 className="nav-link btn btn-primary mr-5"
+                                style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                                 href={`#/application/${model.id}`}
                                 role="button"
                               >
@@ -294,26 +277,6 @@ const History: React.FC<HistoryProps> = () => {
                 <div className="card-body">
                   <h5 className="card-title">Фильтр</h5>
                   <form>
-                    <div className="form-group">
-                      <label>Время формирования от:</label>
-                      <DatePicker
-                        selected={formationTimeFrom}
-                        onChange={handleFormationTimeFromChange}
-                        showTimeSelect
-                        dateFormat="dd.MM.yyyy HH:mm"
-                        locale={ru}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Время формирования до:</label>
-                      <DatePicker
-                        selected={formationTimeTo}
-                        onChange={handleFormationTimeToChange}
-                        showTimeSelect
-                        dateFormat="dd.MM.yyyy HH:mm"
-                        locale={ru}
-                      />
-                    </div>
                     <div className="form-group">
                       <label>Имя пользователя:</label>
                       <input
@@ -438,6 +401,7 @@ const History: React.FC<HistoryProps> = () => {
                             <td>
                               <a
                                 className="nav-link btn btn-primary mr-5"
+                                style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                                 href={`#/application/${model.id}`}
                                 role="button"
                                 target="_blank"
@@ -470,7 +434,7 @@ const History: React.FC<HistoryProps> = () => {
                                       handleRejectApplication(model.id)
                                     }
                                   >
-                                    Удалить
+                                    Отклонить
                                   </button>
                                 </>
                               ) : (
