@@ -4,6 +4,7 @@ interface AuthState {
   isAuthenticated: boolean;
   username: string | null;
   applicationId: number | null;
+  role: string | "";
   eventName: string | "";
   eventStatus: string | "ACTIVE";
   // Другие поля, связанные с аутентификацией, если необходимо
@@ -13,6 +14,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   username: null,
   applicationId: null,
+  role: "",
   eventName: "",
   eventStatus: "ACTIVE",
 };
@@ -31,6 +33,9 @@ const authSlice = createSlice({
     setApplicationId: (state, action) => {
       state.applicationId = action.payload;
     },
+    setRole: (state, action) => {
+      state.role = action.payload;
+    },
     setEventName: (state, action) => {
       state.eventName = action.payload;
     },
@@ -44,6 +49,7 @@ export const {
   setAuthenticated,
   setUsername,
   setApplicationId,
+  setRole,
   setEventName,
   setEventStatus,
 } = authSlice.actions;

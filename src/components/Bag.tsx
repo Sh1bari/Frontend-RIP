@@ -9,6 +9,7 @@ import {
   showSuccessNotification,
 } from "./global/notificationService";
 import { setApplicationId } from "../redux/authSlice";
+import { useNavigate } from 'react-router-dom';
 
 const Bag: React.FC = () => {
   const mockItems = [
@@ -86,11 +87,13 @@ const Bag: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate();
   const deleteApplication = async () => {
     try {
       await api.delete(`/application/${applicationId}`);
       dispatch(setApplicationId("0"));
       localStorage.setItem("applicationId", "0");
+      navigate('/');
     } catch (error: any) {
       handleShowError(error.response.data.message);
     }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setApplicationId, setAuthenticated } from '../redux/authSlice.ts';
+import { setApplicationId, setAuthenticated, setRole } from '../redux/authSlice.ts';
 import { showErrorNotification } from '../components/global/notificationService.ts';
 
 const baseURL = '/api/api'; // Замените на свой базовый URL
@@ -37,6 +37,7 @@ export const setupInterceptors = (dispatch:any) => {
         dispatch(setAuthenticated({ isAuthenticated: false, username: null }));
         localStorage.removeItem('token');
         localStorage.removeItem('applicationId');
+        localStorage.removeItem('role')
         showErrorNotification('Вы не авторизированы');
         console.log('мув');
       }
@@ -53,7 +54,9 @@ export const resetToken = async (dispatch:any) => {
     try {
       const response = await api.post('/reset-token');
       dispatch(setAuthenticated({ isAuthenticated: true, username: response.data.username}));
+      dispatch(setRole(response.data.role));
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('role', response.data.role);
     } catch (error) {
       // Обработайте ошибку, если это необходимо
       console.error('Ошибка при обновлении токена', error);

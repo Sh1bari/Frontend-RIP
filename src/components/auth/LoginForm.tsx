@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import api from "../../API/api.ts";
 import { showErrorNotification } from "../global/notificationService.ts";
 import { useDispatch } from "react-redux";
-import { setAuthenticated } from "../../redux/authSlice.ts";
+import { setAuthenticated, setRole } from "../../redux/authSlice.ts";
 
 interface LoginFormProps {
   onClose: () => void;
@@ -34,7 +34,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
       dispatch(
         setAuthenticated({ isAuthenticated: true, username: formData.username })
       );
+      dispatch(setRole(response.data.role));
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
 
       // Закрываем модальное окно
       
