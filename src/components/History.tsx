@@ -45,6 +45,7 @@ const History: React.FC<HistoryProps> = () => {
         path: "/applications",
       },
     ]);
+    
     try {
       const response = await api.get("/applications", {
         params: {
@@ -60,7 +61,14 @@ const History: React.FC<HistoryProps> = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 3000);
+  
+    return () => {
+      // Очистка интервала при размонтировании компонента
+      clearInterval(intervalId);
+    };
   }, [formationTimeFrom, formationTimeTo, selectedStatus]);
 
   // Функция для форматирования даты
