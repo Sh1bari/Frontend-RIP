@@ -22,6 +22,8 @@ interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const updateBreadcrumbs = useBreadcrumbsUpdater();
   const eventNameRed = useSelector((state: RootState) => state.auth.eventName);
@@ -51,25 +53,29 @@ const HomePage: React.FC<HomePageProps> = () => {
     dispatch(setEventStatus(event.target.value));
   };
 
-  const fetchEvents = async (searchName: string, status: string) => {
+  const fetchEvents = async (
+    searchName: string,
+    status: string,
+    page: number
+  ) => {
     try {
       const response = await api.get(
-        "/events?eventName=" + searchName + "&eventStatus=" + status
+        `/events?eventName=${searchName}&eventStatus=${status}&page=${page}`
       );
       setEvents(response.data.events.content);
       dispatch(setApplicationId(response.data.applicationId));
       localStorage.setItem("applicationId", response.data.applicationId);
+      setCurrentPage(response.data.events.pageable.pageNumber);
+      setTotalPages(response.data.events.totalPages);
     } catch (error) {
       setEvents(Mock);
       console.error("Error fetching events:", error);
-      setTimeout(() => {
-        fetchEvents(eventNameRed, eventStatusRed);
-      }, 2000);
+      
     }
   };
 
   useEffect(() => {
-    fetchEvents(eventNameRed, eventStatusRed);
+    fetchEvents(eventNameRed, eventStatusRed, currentPage);
   }, [eventNameRed, eventStatusRed, isAuthenticated]);
 
   const handleDeleteEvent = async (eventId: number) => {
@@ -79,7 +85,7 @@ const HomePage: React.FC<HomePageProps> = () => {
 
     if (confirmDelete) {
       await api.delete(`/event/${eventId}`);
-      fetchEvents(eventNameRed, eventStatusRed);
+      fetchEvents(eventNameRed, eventStatusRed, currentPage);
     }
   };
 
@@ -143,6 +149,28 @@ const HomePage: React.FC<HomePageProps> = () => {
     } catch (error) {
       console.error("Ошибка при отправке запроса", error);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    // Здесь вы можете обновить страницу в вашем компоненте
+    setCurrentPage(page);
+    console.log(page);
+    fetchEvents(eventNameRed, eventStatusRed, page - 1);
+    // Также, вы можете сделать запрос на сервер для получения данных новой страницы
+    // Например, вызвать fetchEvents с новым значением page
+  };
+  const buttonsToShow = 20;
+
+  const calculateButtonsToShow = () => {
+    const halfButtonsToShow = Math.floor(buttonsToShow / 2);
+    let start = Math.max(1, currentPage - halfButtonsToShow);
+    let end = Math.min(start + buttonsToShow - 1, totalPages);
+
+    if (end - start + 1 < buttonsToShow) {
+      start = Math.max(1, end - buttonsToShow + 1);
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   };
 
   return (
@@ -210,27 +238,12 @@ const HomePage: React.FC<HomePageProps> = () => {
                         )
                       ) : null}
                     </th>
-                    <th>Изображение</th>
-                    <th>Название</th>
-                    <th
-                      onClick={() => handleSort("date")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Дата{" "}
-                      {sortField === "date" ? (
-                        sortOrder === "asc" ? (
-                          <span>&#9650;</span>
-                        ) : (
-                          <span>&#9660;</span>
-                        )
-                      ) : null}
-                    </th>
                     <th>Описание</th>
                     <th>Доступные билеты</th>
                     <th>Купленные билеты</th>
                     <th>Подробнее</th>
                     <th>Удалить</th>
-                    {/* Другие колонки, если нужно */}
+                    {/* Ваши заголовки столбцов */}
                   </tr>
                 </thead>
                 <tbody>
@@ -257,7 +270,10 @@ const HomePage: React.FC<HomePageProps> = () => {
                       <td>{event.purchasedTickets}</td>
                       <td>
                         <button
-                          style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
+                          style={{
+                            backgroundColor: "#0000CD",
+                            borderColor: "#1a5276",
+                          }}
                           className="btn btn-primary"
                           onClick={() => handleDetailsClick(event.id)}
                         >
@@ -272,19 +288,42 @@ const HomePage: React.FC<HomePageProps> = () => {
                           Удалить
                         </button>
                       </td>
-                      {/* Другие ячейки, если нужно */}
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+            <div className="pagination">
+              {calculateButtonsToShow().map((index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageChange(index)}
+                  className={currentPage === index ? "active" : ""}
+                >
+                  {index}
+                </button>
+              ))}
+            </div>
           </>
         ) : (
           <>
-            <div className="row justify-content-center">
-              {events.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
+            <div>
+              <div className="row justify-content-center">
+                {events.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
+              <div className="pagination">
+                {calculateButtonsToShow().map((index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(index)}
+                    className={currentPage === index ? "active" : ""}
+                  >
+                    {index}
+                  </button>
+                ))}
+              </div>
             </div>
           </>
         )}

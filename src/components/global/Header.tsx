@@ -123,27 +123,35 @@ const Header: React.FC = () => {
                   </li>
                 )}
                 <li className="nav-item">
-                  {role == "ADMIN" ? 
-                  (<>
-                  <a
-                    className="nav-link btn btn-primary mr-5"
-                    href="#/applications"
-                    role="button"
-                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
-                  >
-                    Заявки
-                  </a>
-                  </>):
-                  (<>
-                  <a
-                    className="nav-link btn btn-primary mr-5"
-                    href="#/applications"
-                    role="button"
-                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
-                  >
-                    История
-                  </a>
-                  </>)}
+                  {role == "ADMIN" ? (
+                    <>
+                      <a
+                        className="nav-link btn btn-primary mr-5"
+                        href="#/applications"
+                        role="button"
+                        style={{
+                          backgroundColor: "#0000CD",
+                          borderColor: "#1a5276",
+                        }}
+                      >
+                        Заявки
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <a
+                        className="nav-link btn btn-primary mr-5"
+                        href="#/applications"
+                        role="button"
+                        style={{
+                          backgroundColor: "#0000CD",
+                          borderColor: "#1a5276",
+                        }}
+                      >
+                        История
+                      </a>
+                    </>
+                  )}
                 </li>
                 <li className="nav-item">
                   <span className="nav-link text-light">{username}</span>
@@ -163,7 +171,6 @@ const Header: React.FC = () => {
                 <li className="nav-item">
                   <button
                     className="nav-link btn btn-link"
-                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                     onClick={handleLoginClick}
                   >
                     Вход
@@ -172,7 +179,6 @@ const Header: React.FC = () => {
                 <li className="nav-item">
                   <button
                     className="nav-link btn btn-link"
-                    style={{ backgroundColor: '#0000CD', borderColor: '#1a5276' }}
                     onClick={handleRegisterClick}
                   >
                     Регистрация
