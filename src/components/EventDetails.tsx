@@ -49,7 +49,7 @@ const EventDetails: React.FC<EventDetailsProps> = () => {
                 src={
                   selectedEvent?.imageFilePath
                   ? (selectedEvent.imageFilePath == "/gif/loading-11.gif" ? "/Frontend-RIP/gif/loading-11.gif" 
-                  : `http://192.168.56.1:9000/rip/${selectedEvent.imageFilePath}`)
+                  : `/Frontend-RIP${selectedEvent.imageFilePath}`)
                   : '/Frontend-RIP/photos/error-404.png'
                 } className="card-img-top img-fluid" alt="Holiday Image" style={{ height: '400px', objectFit: 'cover' }} />
               <div className="card-body">

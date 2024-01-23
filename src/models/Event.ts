@@ -6,6 +6,7 @@ interface Event {
     imageFileId: number;
     imageFilePath: string;
     tickets: number;
+    status: string;
     purchasedTickets: number;
   }
   
